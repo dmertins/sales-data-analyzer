@@ -65,8 +65,8 @@ An output report file named ```<input_file_name>.done.dat``` is created in ```$H
 The output report file has the following layout:
 
 ```
-amount of clients: <clients_num>
-amount of salesman: <salesman_num>
-most expensive sale: <sale_id>
-worst salesman ever: <salesman_name>
+customers amount: <customers_amount>
+salesmen amount: <salesmen_amount>
+most expensive sale id: <most_expensive_sale_id>
+worst salesman name: <worst_salesman_name>
 ```
