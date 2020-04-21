@@ -6,6 +6,8 @@ WAIT = 0.025
 
 
 def wait_for(func: Callable[[], None]) -> None:
+    """Calls the received function catching AssertionError exceptions until
+    the time limit is exceeded. Raises AssertionError exception."""
     start_time = time.time()
     while True:
         try:

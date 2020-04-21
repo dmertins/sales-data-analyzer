@@ -12,7 +12,7 @@ class DataSummary(TypedDict):
 
 
 def write_report_file(file_name: str, data_summary: DataSummary) -> None:
-    """Write a report file in the output directory"""
+    """Writes a report file in the output directory."""
     report_text = REPORT_TEMPLATE.format(
         customers_amount=data_summary['customers_amount'],
         salesmen_amount=data_summary['salesmen_amount'],
