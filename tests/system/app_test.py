@@ -1,10 +1,8 @@
-import time
 from pathlib import Path
 from unittest import TestCase
 
 from salesdataanalyzer import app
-
-MAX_WAIT = 0.5
+from tests.helper import wait_for
 
 DATA_LINES = [
     '001' 'ç' '12312312312' 'ç' 'John H. Patterson' 'ç' '192000.00' '\n',
@@ -54,20 +52,10 @@ class AppTest(TestCase):
 
         app.main()
 
-        self.wait_for_report_file_to_be_created(REPORT_FILE_PATH)
+        wait_for(lambda: self.assertTrue(REPORT_FILE_PATH.exists(),
+                                         "Report file wasn't created"))
 
         with REPORT_FILE_PATH.open(mode='r', encoding='utf-8') as report_file:
             data_summary = report_file.read()
 
         self.assertEqual(EXPECTED_DATA_SUMMARY, data_summary)
-
-    def wait_for_report_file_to_be_created(self, file_path):
-        start_time = time.time()
-        while True:
-            try:
-                self.assertTrue(file_path.exists(), "Report file wasn't created")
-                return
-            except AssertionError as e:
-                if time.time() - start_time > MAX_WAIT:
-                    raise e
-                time.sleep(0.025)
