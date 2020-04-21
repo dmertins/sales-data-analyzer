@@ -1,7 +1,8 @@
-from pathlib import Path
 from unittest import TestCase
 
 from salesdataanalyzer import app
+from salesdataanalyzer.settings import INPUT_DIR_PATH, OUTPUT_DIR_PATH, \
+    REPORT_TEMPLATE, REPORT_FILE_EXT, INPUT_FILE_EXT
 from tests.helper import wait_for
 
 DATA_LINES = [
@@ -19,23 +20,14 @@ DATA_LINES = [
     '003' 'ç' '006' 'ç' '[06-250-98.89'  ',' '009-1115-78,69]' 'ç' 'Mary Kay Ash'      '\n',
 ]
 
-DATA_SUMMARY_TEMPLATE = 'customers amount: {customers_amount}\n'\
-                        'salesmen amount: {salesmen_amount}\n' \
-                        'most expensive sale id: {most_expensive_sale_id}\n' \
-                        'worst salesman name: {worst_salesman_name}'
-
-EXPECTED_DATA_SUMMARY = DATA_SUMMARY_TEMPLATE.format(
+EXPECTED_REPORT_TEXT = REPORT_TEMPLATE.format(
     customers_amount=3, salesmen_amount=3, most_expensive_sale_id=6,
     worst_salesman_name='David Ogilvy'
 )
 
 FILE_NAME = 'test_data'
-
-DATA_FILE_NAME = FILE_NAME + '.dat'
-REPORT_FILE_NAME = FILE_NAME + '.done.dat'
-
-DATA_FILE_PATH = Path.home() / 'data' / 'in' / DATA_FILE_NAME
-REPORT_FILE_PATH = Path.home() / 'data' / 'out' / REPORT_FILE_NAME
+DATA_FILE_PATH = INPUT_DIR_PATH / (FILE_NAME + INPUT_FILE_EXT)
+REPORT_FILE_PATH = OUTPUT_DIR_PATH / (FILE_NAME + REPORT_FILE_EXT)
 
 
 class AppTest(TestCase):
@@ -56,6 +48,6 @@ class AppTest(TestCase):
                                          "Report file wasn't created"))
 
         with REPORT_FILE_PATH.open(mode='r', encoding='utf-8') as report_file:
-            data_summary = report_file.read()
+            report_text = report_file.read()
 
-        self.assertEqual(EXPECTED_DATA_SUMMARY, data_summary)
+        self.assertEqual(EXPECTED_REPORT_TEXT, report_text)
