@@ -1,6 +1,7 @@
 from unittest import TestCase
 
 from salesdataanalyzer import reporter
+from salesdataanalyzer.reporter import MissingDataSummaryKeyError
 from salesdataanalyzer.settings import OUTPUT_DIR_PATH, REPORT_FILE_EXT, \
     REPORT_TEMPLATE
 from tests.helper import wait_for
@@ -37,3 +38,13 @@ class WriteReportFileTest(TestCase):
             report_text = report_file.read()
 
         self.assertEqual(EXPECTED_REPORT_TEXT, report_text)
+
+    def test_raise_missing_data_summary_field_error(self):
+        self.assertRaises(MissingDataSummaryKeyError,
+                          reporter.write_report_file,
+                          FILE_NAME,
+                          {
+                              'customers_amount': 3,
+                              'salesmen_amount': 3,
+                              'most_expensive_sale_id': 6,
+                          })
