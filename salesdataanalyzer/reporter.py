@@ -1,3 +1,4 @@
+import os
 from typing import TypedDict
 
 from salesdataanalyzer.settings import OUTPUT_DIR_PATH, REPORT_FILE_EXT, \
@@ -23,11 +24,24 @@ def write_report_file(file_name: str, data_summary: DataSummary) -> None:
     except KeyError as e:
         raise MissingDataSummaryKeyError(f'{e.args[0]} in {data_summary}')
 
+    if contains_dir_path(file_name):
+        raise FileNameContainsDirPathError(file_name)
+
     report_file_path = OUTPUT_DIR_PATH / (file_name + REPORT_FILE_EXT)
     report_file_path.parent.mkdir(parents=True, exist_ok=True)
     with report_file_path.open(mode='w', encoding='utf-8') as report_file:
         report_file.write(report_text)
 
 
+def contains_dir_path(file_name: str) -> bool:
+    """Returns True if file_name contains OS path components separator.
+    Returns False otherwise."""
+    return os.path.sep in file_name
+
+
 class MissingDataSummaryKeyError(KeyError):
+    pass
+
+
+class FileNameContainsDirPathError(ValueError):
     pass
