@@ -27,8 +27,12 @@ def write_report_file(file_name: str, data_summary: DataSummary) -> None:
     if contains_dir_path(file_name):
         raise FileNameContainsDirPathError(file_name)
 
+    if is_too_long(file_name):
+        raise FileNameTooLongError(file_name)
+
     report_file_path = OUTPUT_DIR_PATH / (file_name + REPORT_FILE_EXT)
     report_file_path.parent.mkdir(parents=True, exist_ok=True)
+
     with report_file_path.open(mode='w', encoding='utf-8') as report_file:
         report_file.write(report_text)
 
@@ -39,9 +43,19 @@ def contains_dir_path(file_name: str) -> bool:
     return os.path.sep in file_name
 
 
+def is_too_long(file_name: str) -> bool:
+    """Returns True if file_name concatenated with file extension
+    length is > 255. Returns False otherwise."""
+    return len(file_name + REPORT_FILE_EXT) > 255
+
+
 class MissingDataSummaryKeyError(KeyError):
     pass
 
 
 class FileNameContainsDirPathError(ValueError):
+    pass
+
+
+class FileNameTooLongError(OSError):
     pass
