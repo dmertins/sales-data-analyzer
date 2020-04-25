@@ -3,7 +3,7 @@ from unittest import TestCase
 
 from salesdataanalyzer import reporter
 from salesdataanalyzer.reporter import MissingDataSummaryKeyError, \
-    FileNameContainsDirPathError
+    FileNameContainsDirPathError, FileNameTooLongError
 from salesdataanalyzer.settings import OUTPUT_DIR_PATH, REPORT_FILE_EXT, \
     REPORT_TEMPLATE
 from tests.helper import wait_for
@@ -55,4 +55,10 @@ class WriteReportFileTest(TestCase):
         self.assertRaises(FileNameContainsDirPathError,
                           reporter.write_report_file,
                           'dir' + os.path.sep + 'file_name',
+                          DATA_SUMMARY)
+
+    def test_raise_file_name_too_long_error(self):
+        self.assertRaises(FileNameTooLongError,
+                          reporter.write_report_file,
+                          'a' * (255 - len(REPORT_FILE_EXT) + 1),
                           DATA_SUMMARY)
