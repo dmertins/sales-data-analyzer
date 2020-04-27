@@ -11,3 +11,9 @@ class Customer(NamedTuple):
     cnpj: str
     name: str
     business_area: str
+
+
+class SaleItem(NamedTuple):
+    item_id: int
+    quantity: int
+    price: float
