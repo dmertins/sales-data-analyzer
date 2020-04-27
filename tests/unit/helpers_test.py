@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from salesdataanalyzer.helpers import Salesman, Customer
+from salesdataanalyzer.helpers import Salesman, Customer, SaleItem
 
 
 class SalesmanTest(TestCase):
@@ -19,3 +19,12 @@ class CustomerTest(TestCase):
         self.assertEqual('12312312312312', customer.cnpj)
         self.assertEqual('Dale Carnegie', customer.name)
         self.assertEqual('Farming', customer.business_area)
+
+
+class SaleItemTest(TestCase):
+    def test_create_sale_item(self):
+        sale_item = SaleItem(1, 1, 110500.99)
+
+        self.assertEqual(1, sale_item.item_id)
+        self.assertEqual(1, sale_item.quantity)
+        self.assertEqual(110500.99, sale_item.price)
