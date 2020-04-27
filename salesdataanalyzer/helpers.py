@@ -1,4 +1,4 @@
-from typing import NamedTuple
+from typing import NamedTuple, List
 
 
 class Salesman(NamedTuple):
@@ -17,3 +17,9 @@ class SaleItem(NamedTuple):
     item_id: int
     quantity: int
     price: float
+
+
+class Sale(NamedTuple):
+    sale_id: int
+    items: List[SaleItem]
+    salesman_name: str
