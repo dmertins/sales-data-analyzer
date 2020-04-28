@@ -1,15 +1,8 @@
 import os
-from typing import TypedDict
 
+from salesdataanalyzer.helpers import DataSummary
 from salesdataanalyzer.settings import OUTPUT_DIR_PATH, REPORT_FILE_EXT, \
     REPORT_TEMPLATE
-
-
-class DataSummary(TypedDict):
-    customers_amount: int
-    salesmen_amount: int
-    most_expensive_sale_id: int
-    worst_salesman_name: str
 
 
 def write_report_file(file_name: str, data_summary: DataSummary) -> None:
