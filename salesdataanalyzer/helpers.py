@@ -1,4 +1,4 @@
-from typing import NamedTuple, List
+from typing import NamedTuple, List, TypedDict
 
 
 class Salesman(NamedTuple):
@@ -23,3 +23,16 @@ class Sale(NamedTuple):
     sale_id: int
     items: List[SaleItem]
     salesman_name: str
+
+
+class Data(TypedDict):
+    salesmen: List[Salesman]
+    customers: List[Customer]
+    sales: List[Sale]
+
+
+class DataSummary(TypedDict):
+    customers_amount: int
+    salesmen_amount: int
+    most_expensive_sale_id: int
+    worst_salesman_name: str
