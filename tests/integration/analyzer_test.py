@@ -1,4 +1,4 @@
-from unittest import TestCase
+from unittest import TestCase, skip
 
 from salesdataanalyzer.analyzer import analyze_data
 from salesdataanalyzer.helpers import Salesman, Customer, Sale, SaleItem, \
@@ -6,6 +6,7 @@ from salesdataanalyzer.helpers import Salesman, Customer, Sale, SaleItem, \
 
 
 class AnalyzerTest(TestCase):
+    @skip
     def test_analyze_data(self):
         salesmen = [
             Salesman('12312312312', 'John H. Patterson', 192000.00),
