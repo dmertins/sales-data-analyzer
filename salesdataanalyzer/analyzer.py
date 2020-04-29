@@ -6,6 +6,15 @@ from salesdataanalyzer.helpers import Data, DataSummary, Customer, Salesman, \
 
 def analyze_data(data: Data) -> DataSummary:
     """Returns a summary of the analyzed input data."""
+    most_expensive_sale = get_most_expensive_sale(data['sales'])
+    worst_salesman = get_worst_salesman(data['salesmen'], data['sales'])
+
+    return {
+        'customers_amount': count_customers(data['customers']),
+        'salesmen_amount': count_salesmen(data['salesmen']),
+        'most_expensive_sale_id': most_expensive_sale.sale_id,
+        'worst_salesman_name': worst_salesman.name,
+    }
 
 
 def count_customers(customers: List[Customer]) -> int:
