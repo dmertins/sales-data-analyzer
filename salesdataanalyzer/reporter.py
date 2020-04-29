@@ -1,15 +1,8 @@
 import os
-from typing import TypedDict
 
+from salesdataanalyzer.helpers import DataSummary
 from salesdataanalyzer.settings import OUTPUT_DIR_PATH, REPORT_FILE_EXT, \
     REPORT_TEMPLATE
-
-
-class DataSummary(TypedDict):
-    customers_amount: int
-    salesmen_amount: int
-    most_expensive_sale_id: int
-    worst_salesman_name: str
 
 
 def write_report_file(file_name: str, data_summary: DataSummary) -> None:
@@ -39,13 +32,15 @@ def write_report_file(file_name: str, data_summary: DataSummary) -> None:
 
 def contains_dir_path(file_name: str) -> bool:
     """Returns True if file_name contains OS path components separator.
-    Returns False otherwise."""
+    Returns False otherwise.
+    """
     return os.path.sep in file_name
 
 
 def is_too_long(file_name: str) -> bool:
     """Returns True if file_name concatenated with file extension
-    length is > 255. Returns False otherwise."""
+    length is > 255. Returns False otherwise.
+    """
     return len(file_name + REPORT_FILE_EXT) > 255
 
 

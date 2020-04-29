@@ -1,4 +1,4 @@
-from unittest import TestCase
+from unittest import TestCase, skip
 
 from salesdataanalyzer import app
 from salesdataanalyzer.settings import INPUT_DIR_PATH, OUTPUT_DIR_PATH, \
@@ -38,6 +38,7 @@ class AppTest(TestCase):
         DATA_FILE_PATH.unlink()
         REPORT_FILE_PATH.unlink(missing_ok=True)
 
+    @skip
     def test_data_summary_in_report_file(self):
         with DATA_FILE_PATH.open(mode='w', encoding='utf-8') as data_file:
             data_file.writelines(DATA_LINES)
