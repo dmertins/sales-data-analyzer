@@ -12,3 +12,5 @@ REPORT_TEMPLATE = 'customers amount: {customers_amount}\n'\
                   'worst salesman name: {worst_salesman_name}'
 
 FIELD_SEPARATOR = 'ç'
+
+ID_PATTERN = '[0-9]+'
