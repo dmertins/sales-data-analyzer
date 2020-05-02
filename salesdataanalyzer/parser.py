@@ -1,8 +1,8 @@
 import re
 
-from salesdataanalyzer.helpers import Salesman
+from salesdataanalyzer.helpers import Salesman, Customer
 from salesdataanalyzer.settings import FIELD_SEPARATOR, ID_PATTERN, \
-    CPF_PATTERN, SALARY_PATTERN
+    CPF_PATTERN, SALARY_PATTERN, CNPJ_PATTERN
 
 
 def parse_line_id(line: str) -> str:
@@ -61,4 +61,29 @@ class InvalidCpfPatternError(ValueError):
 
 
 class InvalidSalaryPatternError(ValueError):
+    pass
+
+
+def parse_customer(line: str) -> Customer:
+    """Parses line containing Customer data type fields and returns a
+    Customer object. Raises InvalidNumberOfFieldsError if line string
+    argument contains a number of fields different than expected for the
+    Customer object.
+    Validated fields:
+    cnpj: raises InvalidCnpjPatternError
+    """
+    try:
+        _, cnpj, name, business_area = line.split(FIELD_SEPARATOR)
+    except ValueError:
+        raise WrongNumberOfFieldsError(f'"{line}" (expected'
+                                       f'"002ç<cnpj>ç<name>ç<business_area>")')
+
+    if re.fullmatch(CNPJ_PATTERN, cnpj) is None:
+        raise InvalidCnpjPatternError(f'"{cnpj}" '
+                                      f'(expected 14-wide digit only)')
+
+    return Customer(cnpj, name, business_area)
+
+
+class InvalidCnpjPatternError(ValueError):
     pass
