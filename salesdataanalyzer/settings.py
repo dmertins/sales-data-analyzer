@@ -14,3 +14,6 @@ REPORT_TEMPLATE = 'customers amount: {customers_amount}\n'\
 FIELD_SEPARATOR = 'ç'
 
 ID_PATTERN = '[0-9]+'
+
+CPF_PATTERN = '[0-9]{11}'
+SALARY_PATTERN = '[0-9]+.?[0-9]*'
