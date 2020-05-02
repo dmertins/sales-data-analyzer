@@ -17,3 +17,5 @@ ID_PATTERN = '[0-9]+'
 
 CPF_PATTERN = '[0-9]{11}'
 SALARY_PATTERN = '[0-9]+.?[0-9]*'
+
+CNPJ_PATTERN = '[0-9]{14}'
