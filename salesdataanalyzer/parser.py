@@ -1,6 +1,8 @@
 import re
 
-from salesdataanalyzer.settings import FIELD_SEPARATOR, ID_PATTERN
+from salesdataanalyzer.helpers import Salesman
+from salesdataanalyzer.settings import FIELD_SEPARATOR, ID_PATTERN, \
+    CPF_PATTERN, SALARY_PATTERN
 
 
 def parse_line_id(line: str) -> str:
@@ -22,4 +24,41 @@ def parse_line_id(line: str) -> str:
 
 
 class InvalidIdPatternError(ValueError):
+    pass
+
+
+def parse_salesman(line: str) -> Salesman:
+    """Parses line containing Salesman data type fields and returns a
+    Salesman object. Raises InvalidNumberOfFieldsError if line string
+    argument contains a number of fields different than expected for the
+    Salesman object.
+    Validated fields:
+    cpf: raises InvalidCpfPatternError
+    salary: raises InvalidSalaryPatternError
+    """
+    try:
+        _, cpf, name, salary = line.split(FIELD_SEPARATOR)
+    except ValueError:
+        raise WrongNumberOfFieldsError(f'"{line}" (expected'
+                                       f'"001ç<cpf>ç<name>ç<salary>")')
+
+    if re.fullmatch(CPF_PATTERN, cpf) is None:
+        raise InvalidCpfPatternError(f'"{cpf}" (expected 11-wide digit only)')
+
+    if re.fullmatch(SALARY_PATTERN, salary) is None:
+        raise InvalidSalaryPatternError(f'"{salary}"'
+                                        f'(expected int or float pattern)')
+
+    return Salesman(cpf, name, float(salary))
+
+
+class WrongNumberOfFieldsError(ValueError):
+    pass
+
+
+class InvalidCpfPatternError(ValueError):
+    pass
+
+
+class InvalidSalaryPatternError(ValueError):
     pass
