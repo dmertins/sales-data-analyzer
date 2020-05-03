@@ -19,3 +19,7 @@ CPF_PATTERN = '[0-9]{11}'
 SALARY_PATTERN = '[0-9]+.?[0-9]*'
 
 CNPJ_PATTERN = '[0-9]{14}'
+
+ITEM_ID_PATTERN = '[0-9]+'
+QUANTITY_PATTERN = '[0-9]+'
+PRICE_PATTERN = '[0-9]+.?[0-9]*'
