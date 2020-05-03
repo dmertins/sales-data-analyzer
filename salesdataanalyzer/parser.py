@@ -1,11 +1,12 @@
 import re
 from typing import List
 
-from salesdataanalyzer.helpers import Salesman, Customer, SaleItem
+from salesdataanalyzer.helpers import Salesman, Customer, SaleItem, Sale
 from salesdataanalyzer.settings import DATA_FIELD_SEPARATOR, ID_PATTERN, \
     CPF_PATTERN, SALARY_PATTERN, CNPJ_PATTERN, ITEM_ID_PATTERN, \
     QUANTITY_PATTERN, PRICE_PATTERN, ITEM_FIELD_SEPARATOR, \
-    ITEM_LIST_START_DELIMITER, ITEM_LIST_END_DELIMITER, ITEM_LIST_SEPARATOR
+    ITEM_LIST_START_DELIMITER, ITEM_LIST_END_DELIMITER, ITEM_LIST_SEPARATOR, \
+    SALE_ID_PATTERN
 
 
 def parse_line_id(line: str) -> str:
@@ -170,4 +171,36 @@ class InvalidStartDelimiterError(ValueError):
 
 
 class InvalidEndDelimiterError(ValueError):
+    pass
+
+
+def parse_sale(line: str) -> Sale:
+    """Parses a string containing raw Sale data fields.
+    Returns a Sale object.
+    Raises InvalidNumberOfFieldsError the string contains a number of
+    fields different than expected for Sale object.
+    Validated fields:
+    sale_id: raises InvalidSaleIdPatternError
+    """
+    try:
+        _, sale_id, raw_items, salesman_name = line.split(DATA_FIELD_SEPARATOR)
+    except ValueError:
+        raise WrongNumberOfFieldsError(f'"{line}" (expected '
+                                       f'"003ç<sale_id>ç<item_list>ç'
+                                       f'<salesman_name>")')
+
+    if re.fullmatch(SALE_ID_PATTERN, sale_id) is None:
+        raise InvalidSaleIdPatternError(f'"{sale_id}" (expected int)')
+
+    try:
+        items_list = parse_sale_items_list(raw_items)
+    except (InvalidStartDelimiterError, InvalidEndDelimiterError,
+            WrongNumberOfFieldsError, InvalidItemIdPatternError,
+            InvalidQuantityPatternError, InvalidPricePatternError) as e:
+        raise e
+
+    return Sale(int(sale_id), items_list, salesman_name)
+
+
+class InvalidSaleIdPatternError(ValueError):
     pass
