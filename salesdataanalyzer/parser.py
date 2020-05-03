@@ -1,9 +1,11 @@
 import re
+from typing import List
 
 from salesdataanalyzer.helpers import Salesman, Customer, SaleItem
 from salesdataanalyzer.settings import DATA_FIELD_SEPARATOR, ID_PATTERN, \
     CPF_PATTERN, SALARY_PATTERN, CNPJ_PATTERN, ITEM_ID_PATTERN, \
-    QUANTITY_PATTERN, PRICE_PATTERN, ITEM_FIELD_SEPARATOR
+    QUANTITY_PATTERN, PRICE_PATTERN, ITEM_FIELD_SEPARATOR, \
+    ITEM_LIST_START_DELIMITER, ITEM_LIST_END_DELIMITER, ITEM_LIST_SEPARATOR
 
 
 def parse_line_id(line: str) -> str:
@@ -92,11 +94,11 @@ class InvalidCnpjPatternError(ValueError):
 
 def parse_sale_item(item: str) -> SaleItem:
     """Parses a string containing raw sale item data and returns a
-    SaleItem object. Raises InvalidNumberOfFieldsError if the string
+    SaleItem object. Raises WrongNumberOfFieldsError if the string
     contains a number of fields different than expected for the
     SaleItem object.
     Validated fields:
-    item_id: raises InvalidIdPatternError
+    item_id: raises InvalidItemIdPatternError
     quantity: raises InvalidQuantityPatternError
     price: raises InvalidPricePatternError
     """
@@ -127,4 +129,45 @@ class InvalidQuantityPatternError(ValueError):
 
 
 class InvalidPricePatternError(ValueError):
+    pass
+
+
+def parse_sale_items_list(raw_items: str) -> List[SaleItem]:
+    """Parses a string delimited by a start and end character,
+    containing a list of Sale Items separated by a given character. The
+    separator and the delimiter characters are defined in the settings
+    file.
+    Returns a list of SaleItem objects.
+    Raises InvalidStartDelimiterError for invalid start delimiter.
+    Raises InvalidEndDelimiterError for invalid end delimiter.
+    """
+    if not raw_items.startswith(ITEM_LIST_START_DELIMITER):
+        raise InvalidStartDelimiterError(f'"{raw_items[0]}" in "{raw_items}" '
+                                         f'(expected '
+                                         f'"{ITEM_LIST_START_DELIMITER}")')
+
+    if not raw_items.endswith(ITEM_LIST_END_DELIMITER):
+        raise InvalidEndDelimiterError(f'"{raw_items[-1]}" in "{raw_items}" '
+                                       f'(expected '
+                                       f'"{ITEM_LIST_END_DELIMITER}")')
+
+    raw_items = raw_items.lstrip(ITEM_LIST_START_DELIMITER)
+    raw_items = raw_items.rstrip(ITEM_LIST_END_DELIMITER)
+
+    raw_items_list = raw_items.split(ITEM_LIST_SEPARATOR)
+
+    try:
+        sale_items = [parse_sale_item(raw_item) for raw_item in raw_items_list]
+    except (WrongNumberOfFieldsError, InvalidItemIdPatternError,
+            InvalidQuantityPatternError, InvalidPricePatternError) as e:
+        raise e
+
+    return sale_items
+
+
+class InvalidStartDelimiterError(ValueError):
+    pass
+
+
+class InvalidEndDelimiterError(ValueError):
     pass
