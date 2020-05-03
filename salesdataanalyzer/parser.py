@@ -1,8 +1,9 @@
 import re
 
-from salesdataanalyzer.helpers import Salesman, Customer
+from salesdataanalyzer.helpers import Salesman, Customer, SaleItem
 from salesdataanalyzer.settings import FIELD_SEPARATOR, ID_PATTERN, \
-    CPF_PATTERN, SALARY_PATTERN, CNPJ_PATTERN
+    CPF_PATTERN, SALARY_PATTERN, CNPJ_PATTERN, ITEM_ID_PATTERN, \
+    QUANTITY_PATTERN, PRICE_PATTERN, ITEM_FIELD_SEPARATOR
 
 
 def parse_line_id(line: str) -> str:
@@ -86,4 +87,44 @@ def parse_customer(line: str) -> Customer:
 
 
 class InvalidCnpjPatternError(ValueError):
+    pass
+
+
+def parse_sale_item(item: str) -> SaleItem:
+    """Parses a string containing raw sale item data and returns a
+    SaleItem object. Raises InvalidNumberOfFieldsError if the string
+    contains a number of fields different than expected for the
+    SaleItem object.
+    Validated fields:
+    item_id: raises InvalidIdPatternError
+    quantity: raises InvalidQuantityPatternError
+    price: raises InvalidPricePatternError
+    """
+    try:
+        item_id, quantity, price = item.split(ITEM_FIELD_SEPARATOR)
+    except ValueError:
+        raise WrongNumberOfFieldsError(f'"{item}" (expected '
+                                       f'"<item_id>-<quantity>-<price>")')
+
+    if re.fullmatch(ITEM_ID_PATTERN, item_id) is None:
+        raise InvalidItemIdPatternError(f'"{item_id}" (expected int)')
+
+    if re.fullmatch(QUANTITY_PATTERN, quantity) is None:
+        raise InvalidQuantityPatternError(f'"{quantity}" (expected int)')
+
+    if re.fullmatch(PRICE_PATTERN, price) is None:
+        raise InvalidPricePatternError(f'"{price}" (expected float)')
+
+    return SaleItem(int(item_id), int(quantity), float(price))
+
+
+class InvalidItemIdPatternError(ValueError):
+    pass
+
+
+class InvalidQuantityPatternError(ValueError):
+    pass
+
+
+class InvalidPricePatternError(ValueError):
     pass
