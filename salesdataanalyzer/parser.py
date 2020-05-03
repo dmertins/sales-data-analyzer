@@ -1,7 +1,7 @@
 import re
 
 from salesdataanalyzer.helpers import Salesman, Customer, SaleItem
-from salesdataanalyzer.settings import FIELD_SEPARATOR, ID_PATTERN, \
+from salesdataanalyzer.settings import DATA_FIELD_SEPARATOR, ID_PATTERN, \
     CPF_PATTERN, SALARY_PATTERN, CNPJ_PATTERN, ITEM_ID_PATTERN, \
     QUANTITY_PATTERN, PRICE_PATTERN, ITEM_FIELD_SEPARATOR
 
@@ -14,7 +14,7 @@ def parse_line_id(line: str) -> str:
     Valid ids must match the pattern from ID_PATTERN in the settings
     file. If the id is invalid, raises InvalidIdPatternError.
     """
-    sep_index = line.find(FIELD_SEPARATOR)
+    sep_index = line.find(DATA_FIELD_SEPARATOR)
 
     line_id = line[:sep_index] if sep_index != -1 else line
 
@@ -38,7 +38,7 @@ def parse_salesman(line: str) -> Salesman:
     salary: raises InvalidSalaryPatternError
     """
     try:
-        _, cpf, name, salary = line.split(FIELD_SEPARATOR)
+        _, cpf, name, salary = line.split(DATA_FIELD_SEPARATOR)
     except ValueError:
         raise WrongNumberOfFieldsError(f'"{line}" (expected'
                                        f'"001ç<cpf>ç<name>ç<salary>")')
@@ -74,7 +74,7 @@ def parse_customer(line: str) -> Customer:
     cnpj: raises InvalidCnpjPatternError
     """
     try:
-        _, cnpj, name, business_area = line.split(FIELD_SEPARATOR)
+        _, cnpj, name, business_area = line.split(DATA_FIELD_SEPARATOR)
     except ValueError:
         raise WrongNumberOfFieldsError(f'"{line}" (expected'
                                        f'"002ç<cnpj>ç<name>ç<business_area>")')
