@@ -1,12 +1,39 @@
 import re
 from typing import List
 
-from salesdataanalyzer.helpers import Salesman, Customer, SaleItem, Sale
+from salesdataanalyzer.helpers import Salesman, Customer, SaleItem, Sale, Data
 from salesdataanalyzer.settings import DATA_FIELD_SEPARATOR, ID_PATTERN, \
     CPF_PATTERN, SALARY_PATTERN, CNPJ_PATTERN, ITEM_ID_PATTERN, \
     QUANTITY_PATTERN, PRICE_PATTERN, ITEM_FIELD_SEPARATOR, \
     ITEM_LIST_START_DELIMITER, ITEM_LIST_END_DELIMITER, ITEM_LIST_SEPARATOR, \
     SALE_ID_PATTERN
+
+
+def parse_data(lines: List[str]) -> Data:
+    """Parses lines of raw data.
+    Returns dict containing lists of data objects.
+    """
+    data: Data = {'salesmen': [], 'customers': [], 'sales': []}
+
+    for line in lines:
+        line_id = parse_line_id(line)
+
+        if line_id == '001':
+            salesman = parse_salesman(line)
+            data['salesmen'].append(salesman)
+
+        elif line_id == '002':
+            customer = parse_customer(line)
+            data['customers'].append(customer)
+
+        elif line_id == '003':
+            sale = parse_sale(line)
+            data['sales'].append(sale)
+
+        else:
+            pass
+
+    return data
 
 
 def parse_line_id(line: str) -> str:
